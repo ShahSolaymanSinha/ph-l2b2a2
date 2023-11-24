@@ -8,7 +8,7 @@ export default interface TUser {
   isActive: boolean;
   hobbies: string[];
   address: TAddress;
-  orders: TOrders;
+  orders: TOrders[];
 }
 
 interface TFullName {

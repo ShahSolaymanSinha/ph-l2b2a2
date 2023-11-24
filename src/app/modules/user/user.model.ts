@@ -13,11 +13,13 @@ const userSchema = new Schema<TUser>({
   age: { type: Number, required: true },
   email: { type: String, required: true, unique: true },
   hobbies: { type: [String], required: true },
-  address: {
-    street: { type: String, required: true },
-    city: { type: String, required: true },
-    country: { type: String, required: true },
-  },
+  address: [
+    {
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      country: { type: String, required: true },
+    },
+  ],
   orders: {
     productName: { type: String, required: true },
     price: { type: Number, required: true },
