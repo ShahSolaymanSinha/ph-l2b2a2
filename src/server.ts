@@ -4,7 +4,9 @@ import config from './app/config';
 
 async function main() {
   try {
-    await mongoose.connect(config.database_url as string);
+    await mongoose.connect(`${config.database_url}`, {
+      dbName: 'assignment2_database',
+    });
 
     app.listen(config.port, () => {
       if (config.environment === 'development') {

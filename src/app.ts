@@ -1,11 +1,14 @@
 import cors from 'cors';
 import express, { Application, Request, Response } from 'express';
+import userRouter from './app/modules/user/user.route';
 
 const app: Application = express();
 
 //parsers
 app.use(express.json());
 app.use(cors());
+
+app.use('/api/users', userRouter);
 
 app.get('/', (req: Request, res: Response) => {
   try {
@@ -21,6 +24,14 @@ app.get('/', (req: Request, res: Response) => {
       data: [],
     });
   }
+});
+
+app.all('*', (req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    data: [],
+  });
 });
 
 export default app;
