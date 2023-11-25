@@ -17,4 +17,9 @@ userRouter.put('/:userId/orders', userController.userOrdersUpdateController);
 
 userRouter.get('/:userId/orders', userController.userGetAllOrdersController);
 
+userRouter.get(
+  '/:userId/orders/total-price',
+  userController.userGetOrdersTotalController,
+);
+
 export default userRouter;

@@ -108,13 +108,45 @@ const userUpdateOrdersService = async (
 };
 
 // Retrieve all orders
-const userGetAllOrders = async (userId: number) => {
+const userGetAllOrdersService = async (userId: number) => {
   const result = await User.aggregate([
     { $match: { userId: userId } },
     {
       $project: {
         _id: 0,
         orders: 1,
+      },
+    },
+  ]);
+  return result[0];
+};
+
+// User Get Order Total
+const userGetOrdersTotalService = async (userId: number) => {
+  const isUserExists = await User.mIsUserExists({ userId });
+  if (!isUserExists) {
+    throw new Error('User not found').message;
+  }
+  const result = await User.aggregate([
+    {
+      $match: {
+        userId: userId,
+      },
+    },
+    {
+      $unwind: '$orders',
+    },
+    {
+      $group: {
+        _id: '$_id',
+        totalPrice: {
+          $sum: { $multiply: ['$orders.price', '$orders.quantity'] },
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
       },
     },
   ]);
@@ -129,7 +161,8 @@ const userServices = {
   updateUserService: userUpdateService,
   userDeleteService,
   userUpdateOrdersService,
-  userGetAllOrders,
+  userGetAllOrders: userGetAllOrdersService,
+  userGetOrdersTotalService,
 };
 
 export default userServices;
