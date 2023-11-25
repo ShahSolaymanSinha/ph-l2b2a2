@@ -6,7 +6,7 @@ import bcrypt from 'bcrypt';
 // User Services: Database l2a2
 
 // Creating an user
-const createUserIntoDB = async (user: TUser) => {
+const createUserIntoDBService = async (user: TUser) => {
   if (
     await User.mIsUserExists({
       userId: user.userId,
@@ -21,7 +21,7 @@ const createUserIntoDB = async (user: TUser) => {
 };
 
 // Retrieving all users
-const getAllUsers = async () => {
+const getAllUserService = async () => {
   const result = await User.aggregate([
     {
       $project: {
@@ -38,7 +38,7 @@ const getAllUsers = async () => {
 };
 
 // User specific user data
-const getSpecificUser = async (userId: number) => {
+const getUserService = async (userId: number) => {
   const result = await User.mIsUserExists({
     userId,
   });
@@ -49,7 +49,7 @@ const getSpecificUser = async (userId: number) => {
 };
 
 // Update user
-const updateUserService = async (userId: number, userData: TUser) => {
+const userUpdateService = async (userId: number, userData: TUser) => {
   const isUserExists = await User.mIsUserExists({ userId });
   if (!isUserExists) {
     throw new Error('User not found').message;
@@ -62,12 +62,23 @@ const updateUserService = async (userId: number, userData: TUser) => {
   return result;
 };
 
+// Delete User Service
+const userDeleteService = async (userId: number) => {
+  const isUserExists = await User.mIsUserExists({ userId });
+  if (!isUserExists) {
+    throw new Error('User not found').message;
+  }
+  const result = await User.deleteOne({ userId });
+  return result;
+};
+
 // Exporting All User Services
 const userServices = {
-  createUserIntoDB,
-  getAllUsers,
-  getSpecificUser,
-  updateUserService,
+  createUserIntoDB: createUserIntoDBService,
+  getAllUsers: getAllUserService,
+  getSpecificUser: getUserService,
+  updateUserService: userUpdateService,
+  userDeleteService,
 };
 
 export default userServices;

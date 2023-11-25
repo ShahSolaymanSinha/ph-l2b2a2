@@ -11,4 +11,6 @@ userRouter.get('/:userId', userController.getSpecificUserByUserId);
 
 userRouter.put('/:userId', userController.updateUserController);
 
+userRouter.delete('/:userId', userController.userDeleteController);
+
 export default userRouter;

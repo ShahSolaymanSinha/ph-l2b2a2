@@ -52,12 +52,13 @@ const userSchema = new Schema<TUser, UserModel>(
           (await this.findOne({ username: params.username })) ||
           (await this.findOne({ email: params.email }))
         ) {
-          return this.aggregate([
-            { $match: { userId: params.userId } },
-            {
-              $project: { password: 0, _id: 0, orders: 0, __v: 0 },
-            },
-          ]);
+          return (
+            this.findOne({ userId: params.userId }) ||
+            this.findOne({
+              username: params.username,
+            }) ||
+            this.findOne({ email: params.email })
+          );
         } else {
           return null;
         }

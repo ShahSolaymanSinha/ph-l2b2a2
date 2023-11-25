@@ -79,6 +79,24 @@ const updateUserController = async (req: Request, res: Response) => {
   }
 };
 
+const userDeleteController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    await userServices.userDeleteService(Number(userId));
+    successResponse({
+      message: 'User deleted successfully',
+      data: null,
+      res,
+    });
+  } catch (err) {
+    errorResponse({
+      message: 'User not found',
+      error: { code: 404, description: err },
+      res,
+    });
+  }
+};
+
 // Success response function
 const successResponse = (params: {
   message?: string;
@@ -113,6 +131,7 @@ const userController = {
   getAllUsers,
   getSpecificUserByUserId,
   updateUserController,
+  userDeleteController,
 };
 
 export default userController;
