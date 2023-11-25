@@ -57,6 +57,28 @@ const getSpecificUserByUserId = async (req: Request, res: Response) => {
   }
 };
 
+const updateUserController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const userData = req.body;
+    const result = await userServices.updateUserService(
+      Number(userId),
+      userData,
+    );
+    successResponse({
+      message: 'User updated successfully',
+      data: result,
+      res,
+    });
+  } catch (err) {
+    errorResponse({
+      message: 'User not found',
+      error: { code: 404, description: err },
+      res,
+    });
+  }
+};
+
 // Success response function
 const successResponse = (params: {
   message?: string;
@@ -90,6 +112,7 @@ const userController = {
   createAUser,
   getAllUsers,
   getSpecificUserByUserId,
+  updateUserController,
 };
 
 export default userController;

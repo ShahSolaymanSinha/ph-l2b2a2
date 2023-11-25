@@ -1,5 +1,7 @@
+import config from '../../config';
 import TUser from './user.interface';
 import User from './user.model';
+import bcrypt from 'bcrypt';
 
 // User Services: Database l2a2
 
@@ -46,11 +48,26 @@ const getSpecificUser = async (userId: number) => {
   return result;
 };
 
+// Update user
+const updateUserService = async (userId: number, userData: TUser) => {
+  const isUserExists = await User.mIsUserExists({ userId });
+  if (!isUserExists) {
+    throw new Error('User not found').message;
+  }
+  userData.password = await bcrypt.hash(
+    userData.password,
+    Number(config.bcrypt_salt),
+  );
+  const result = await User.replaceOne({ userId }, userData);
+  return result;
+};
+
 // Exporting All User Services
 const userServices = {
   createUserIntoDB,
   getAllUsers,
   getSpecificUser,
+  updateUserService,
 };
 
 export default userServices;
