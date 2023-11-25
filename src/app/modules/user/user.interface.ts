@@ -11,14 +11,13 @@ export default interface TUser {
   };
   age: number;
   email: string;
-  isActive: boolean;
+  isActive?: boolean;
   hobbies: string[];
   address: TAddress;
   orders?: TOrders[];
 }
 
 // interface TFullName
-
 interface TAddress {
   street: string;
   city: string;

@@ -14,11 +14,11 @@ const createAUser = async (req: Request, res: Response) => {
         data: result,
       });
     }
-  } catch (error) {
+  } catch (err) {
     res.status(500).json({
       success: false,
       message: 'Something went wrong',
-      error: error,
+      error: err,
     });
   }
 };

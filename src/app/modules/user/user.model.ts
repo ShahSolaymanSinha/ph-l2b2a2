@@ -1,5 +1,7 @@
 import { Schema, model } from 'mongoose';
 import TUser, { UserModel } from './user.interface';
+import bcrypt from 'bcrypt';
+import config from '../../config';
 
 const userSchema = new Schema<TUser, UserModel>(
   {
@@ -34,6 +36,10 @@ const userSchema = new Schema<TUser, UserModel>(
     id: false,
     toJSON: {
       virtuals: true,
+      transform: function (doc, ret) {
+        delete ret.password;
+        return ret;
+      },
     },
     statics: {
       async mIsUserExists(userId, username, email) {
@@ -53,6 +59,20 @@ const userSchema = new Schema<TUser, UserModel>(
 
 userSchema.virtual('vFullName').get(function () {
   return `${this.fullName.firstName} ${this.fullName.lastName}`;
+});
+
+userSchema.pre<TUser>('save', async function (next) {
+  try {
+    const hashedPassword = await bcrypt.hash(
+      this.password,
+      Number(config.bcrypt_salt),
+    );
+    this.password = hashedPassword;
+
+    next();
+  } catch (error) {
+    next(error as Error);
+  }
 });
 
 const User = model<TUser, UserModel>('User', userSchema);
