@@ -44,8 +44,24 @@ const getUserService = async (userId: number) => {
   });
   if (!result) {
     throw new Error('User not found').message;
+  } else {
+    const newResult = await User.aggregate([
+      {
+        $project: {
+          _id: 0,
+          userId: 1,
+          username: 1,
+          fullName: 1,
+          age: 1,
+          email: 1,
+          isActive: 1,
+          hobbies: 1,
+          address: 1,
+        },
+      },
+    ]);
+    return newResult;
   }
-  return result;
 };
 
 // Update user
@@ -72,6 +88,24 @@ const userDeleteService = async (userId: number) => {
   return result;
 };
 
+// User Orders Update Service
+interface IUpdateOrders {
+  productName: string;
+  price: number;
+  quantity: number;
+}
+const userUpdateOrdersService = async (
+  userId: number,
+  order: IUpdateOrders,
+) => {
+  const isUserExists = await User.mIsUserExists({ userId });
+  if (!isUserExists) {
+    throw new Error('User not found').message;
+  }
+  const result = await User.updateOne({ userId }, { $push: { orders: order } });
+  return result;
+};
+
 // Exporting All User Services
 const userServices = {
   createUserIntoDB: createUserIntoDBService,
@@ -79,6 +113,7 @@ const userServices = {
   getSpecificUser: getUserService,
   updateUserService: userUpdateService,
   userDeleteService,
+  userUpdateOrdersService,
 };
 
 export default userServices;

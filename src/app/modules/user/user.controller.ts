@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import userServices from './user.services';
 import UserValidationSchema from './user.validation';
 
-const createAUser = async (req: Request, res: Response) => {
+// Create User Controller
+const userCreateController = async (req: Request, res: Response) => {
   try {
     const userData = req.body;
     const validateUser = UserValidationSchema.parse(userData);
@@ -22,7 +23,8 @@ const createAUser = async (req: Request, res: Response) => {
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+// Get All User Controller
+const allUserGetController = async (req: Request, res: Response) => {
   try {
     const result = await userServices.getAllUsers();
     successResponse({
@@ -38,8 +40,8 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
-// get specific user by id
-const getSpecificUserByUserId = async (req: Request, res: Response) => {
+// Get User Controller
+const userGetController = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const result = await userServices.getSpecificUser(Number(userId));
@@ -57,7 +59,8 @@ const getSpecificUserByUserId = async (req: Request, res: Response) => {
   }
 };
 
-const updateUserController = async (req: Request, res: Response) => {
+// User Update Controller
+const userUpdateController = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     const userData = req.body;
@@ -79,12 +82,33 @@ const updateUserController = async (req: Request, res: Response) => {
   }
 };
 
+// User Delete Controller
 const userDeleteController = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
     await userServices.userDeleteService(Number(userId));
     successResponse({
       message: 'User deleted successfully',
+      data: null,
+      res,
+    });
+  } catch (err) {
+    errorResponse({
+      message: 'User not found',
+      error: { code: 404, description: err },
+      res,
+    });
+  }
+};
+
+// User Orders Update Controller
+const userOrdersUpdateController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const order = req.body;
+    await userServices.userUpdateOrdersService(Number(userId), order);
+    successResponse({
+      message: 'Order created successfully!',
       data: null,
       res,
     });
@@ -127,11 +151,12 @@ const errorResponse = (params: {
 
 // Exporting all user controller
 const userController = {
-  createAUser,
-  getAllUsers,
-  getSpecificUserByUserId,
-  updateUserController,
+  createAUser: userCreateController,
+  getAllUsers: allUserGetController,
+  getSpecificUserByUserId: userGetController,
+  updateUserController: userUpdateController,
   userDeleteController,
+  userOrdersUpdateController,
 };
 
 export default userController;
