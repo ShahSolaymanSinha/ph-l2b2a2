@@ -109,6 +109,10 @@ const userUpdateOrdersService = async (
 
 // Retrieve all orders
 const userGetAllOrdersService = async (userId: number) => {
+  const isUserExists = await User.mIsUserExists({ userId });
+  if (!isUserExists) {
+    throw new Error('User not found').message;
+  }
   const result = await User.aggregate([
     { $match: { userId: userId } },
     {
