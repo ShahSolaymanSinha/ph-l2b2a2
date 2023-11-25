@@ -30,10 +30,12 @@ type TOrders = {
   quantity?: number;
 };
 
+interface IUserExists {
+  userId?: number;
+  username?: string;
+  email?: string;
+}
+
 export interface UserModel extends Model<TUser> {
-  mIsUserExists(
-    userId: number,
-    username: string,
-    email: string,
-  ): Promise<boolean | null>;
+  mIsUserExists(params: IUserExists): Promise<boolean | null>;
 }

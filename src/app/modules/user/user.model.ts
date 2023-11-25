@@ -42,13 +42,22 @@ const userSchema = new Schema<TUser, UserModel>(
       },
     },
     statics: {
-      async mIsUserExists(userId, username, email) {
+      async mIsUserExists(params: {
+        userId?: number;
+        username?: string;
+        email?: string;
+      }) {
         if (
-          (await User.findOne({ userId })) ||
-          (await User.findOne({ username })) ||
-          (await User.findOne({ email }))
+          (await this.findOne({ userId: params.userId })) ||
+          (await this.findOne({ username: params.username })) ||
+          (await this.findOne({ email: params.email }))
         ) {
-          return true;
+          return this.aggregate([
+            { $match: { userId: params.userId } },
+            {
+              $project: { password: 0, _id: 0, orders: 0, __v: 0 },
+            },
+          ]);
         } else {
           return null;
         }
