@@ -121,6 +121,25 @@ const userOrdersUpdateController = async (req: Request, res: Response) => {
   }
 };
 
+// User get all orders controller
+const userGetAllOrdersController = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const result = await userServices.userGetAllOrders(Number(userId));
+    successResponse({
+      message: 'Orders fetched successfully!',
+      data: result,
+      res,
+    });
+  } catch (err) {
+    errorResponse({
+      message: 'User not found',
+      error: { code: 404, description: err },
+      res,
+    });
+  }
+};
+
 // Success response function
 const successResponse = (params: {
   message?: string;
@@ -157,6 +176,7 @@ const userController = {
   updateUserController: userUpdateController,
   userDeleteController,
   userOrdersUpdateController,
+  userGetAllOrdersController,
 };
 
 export default userController;

@@ -46,6 +46,7 @@ const getUserService = async (userId: number) => {
     throw new Error('User not found').message;
   } else {
     const newResult = await User.aggregate([
+      { $match: { userId: userId } },
       {
         $project: {
           _id: 0,
@@ -60,7 +61,7 @@ const getUserService = async (userId: number) => {
         },
       },
     ]);
-    return newResult;
+    return newResult[0];
   }
 };
 
@@ -106,6 +107,20 @@ const userUpdateOrdersService = async (
   return result;
 };
 
+// Retrieve all orders
+const userGetAllOrders = async (userId: number) => {
+  const result = await User.aggregate([
+    { $match: { userId: userId } },
+    {
+      $project: {
+        _id: 0,
+        orders: 1,
+      },
+    },
+  ]);
+  return result[0];
+};
+
 // Exporting All User Services
 const userServices = {
   createUserIntoDB: createUserIntoDBService,
@@ -114,6 +129,7 @@ const userServices = {
   updateUserService: userUpdateService,
   userDeleteService,
   userUpdateOrdersService,
+  userGetAllOrders,
 };
 
 export default userServices;

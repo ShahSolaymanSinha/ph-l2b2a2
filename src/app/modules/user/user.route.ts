@@ -15,4 +15,6 @@ userRouter.delete('/:userId', userController.userDeleteController);
 
 userRouter.put('/:userId/orders', userController.userOrdersUpdateController);
 
+userRouter.get('/:userId/orders', userController.userGetAllOrdersController);
+
 export default userRouter;
